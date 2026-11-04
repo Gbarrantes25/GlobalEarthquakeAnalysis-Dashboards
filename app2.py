@@ -16,9 +16,7 @@ def _():
 
     @mo.persistent_cache
     def crear_df():
-        dfx = pd.read_parquet(
-            "https://github.com/Gbarrantes25/GlobalEarthquakeAnalysis-Dashboards/raw/refs/heads/main/df_sismos.parquet"
-        )
+        dfx = pd.read_parquet(r"C:\Users\Gian\Downloads\df_sismos.parquet")
         dfx["lustro"] = (dfx["year"] // 5) * 5
         dfx = dfx.loc[dfx["Mw"] >= 5]
         dfx1 = dfx.dropna(subset=["depth"])
@@ -34,10 +32,10 @@ def _():
 def _(mo, render_detallado, render_home, render_vistageneral):
     _router = mo.routes(
         {
-            "#/": render_home(),
-            "#/vista_general": render_vistageneral(),
-            "#/analisis_detallado": render_detallado(),
-            mo.routes.CATCH_ALL: render_home(),
+            "#/": render_home,
+            "#/vista_general": render_vistageneral,
+            "#/analisis_detallado": render_detallado,
+            mo.routes.CATCH_ALL: render_home,
         }
     )
 
@@ -412,7 +410,6 @@ def _(df_limpio, go, mo, np, selector_lustro, titulo_vistageneral):
                 "time",
                 "latitude",
                 "longitude",
-                "place",
                 "country_name",
                 "Mw",
                 "lustro",
@@ -430,7 +427,6 @@ def _(df_limpio, go, mo, np, selector_lustro, titulo_vistageneral):
                 "time",
                 "latitude",
                 "longitude",
-                "place",
                 "country_name",
                 "depth",
                 "lustro",
@@ -493,7 +489,7 @@ def _(df_limpio, go, mo, np, selector_lustro, titulo_vistageneral):
         )
 
         img = mo.image(
-            src="https://raw.githubusercontent.com/Gbarrantes25/GlobalEarthquakeAnalysis-Dashboards/refs/heads/main/VectorLogo2.svg",
+            src="D:/Imágenes/Logo de consultoría/VectorLogo2.svg",
             height=150,
             rounded=True,
             vmin=50,
@@ -553,36 +549,31 @@ def _(df_limpio, go, mo, np, selector_lustro, titulo_vistageneral):
 
     # Gráficos de mapa
     def crear_mapa_mw_lustro():
-        lat = df_mw_lustro["latitude"].to_numpy()
-        lon = df_mw_lustro["longitude"].to_numpy()
-        mw = df_mw_lustro["Mw"].to_numpy()
+        lat = df_mw_lustro["latitude"].to_numpy().round(2).astype("float32")
+        lon = df_mw_lustro["longitude"].to_numpy().round(2).astype("float32")
+        mw = df_mw_lustro["Mw"].to_numpy().round(1).astype("float32")
+        tamaño = (mw**1.6) - 8
+
         fig = go.Figure()
         mapa = go.Scattermap(
             lat=lat,
             lon=lon,
             mode="markers",
             marker={
-                "size": (mw**1.6) - 8,
+                "size": tamaño,
                 "colorscale": "plasma_r",
                 "color": mw,
                 "showscale": True,
-                "cmin": mw.min(),
-                "cmax": mw.max(),
+                "cmin": float(mw.min()),
+                "cmax": float(mw.max()),
                 "colorbar": {"orientation": "h"},
                 "opacity": 1,
             },
             name="",
-            customdata=np.stack(
-                (
-                    mw,
-                    df_mw_lustro["country_name"],
-                    df_mw_lustro["place"],
-                ),
-                axis=-1,
-            ),
-            hovertemplate="<b>Magnitud: %{customdata[0]} Mw</b><br><b>País: %{customdata[1]}</b><br><b>Lugar: %{customdata[2]}</b>",
+            customdata=df_mw_lustro["country_name"].to_numpy(),
+            hovertemplate="<b>Magnitud: %{marker.color:.1f} Mw<br>País: %{customdata}</b>",
         )
-        fig.add_traces([mapa])
+        fig.add_trace(mapa)
         fig.update_layout(
             title={
                 "text": f"<b>Mapa de Sismos, lustro: {selector_lustro.value} - {selector_lustro.value + 4}</b>"
@@ -592,14 +583,16 @@ def _(df_limpio, go, mo, np, selector_lustro, titulo_vistageneral):
                 "center": {"lat": 15, "lon": -90},
             },
         )
-        return fig
+        return mo.ui.plotly(fig)
 
     mapa_mw_lustro = crear_mapa_mw_lustro()
 
     def crear_mapa_depth_lustro():
-        lat = df_depth_lustro["latitude"].to_numpy()
-        lon = df_depth_lustro["longitude"].to_numpy()
-        depth = df_depth_lustro["depth"].to_numpy().round(1)
+        lat = df_depth_lustro["latitude"].to_numpy().round(2).astype("float32")
+        lon = (
+            df_depth_lustro["longitude"].to_numpy().round(2).astype("float32")
+        )
+        depth = df_depth_lustro["depth"].to_numpy().astype("float32").round(1)
         colores = [
             "#800000",
             "#FF2D2D",
@@ -618,20 +611,17 @@ def _(df_limpio, go, mo, np, selector_lustro, titulo_vistageneral):
             name="",
             marker={
                 "size": 8,
-                "colorscale": colores,
+                "colorscale": "Agsunset",
                 "color": depth,
                 "showscale": True,
-                "cmin": depth.min(),
-                "cmax": depth.max(),
+                "cmin": float(depth.min()),
+                "cmax": float(depth.max()),
                 "colorbar": {"orientation": "h"},
             },
-            customdata=np.stack(
-                (depth, df_depth_lustro["country_name"]),
-                axis=-1,
-            ),
-            hovertemplate="<b>Profundidad: %{customdata[0]} Km</b><br>País: %{customdata[1]}<b></b>",
+            customdata=df_depth_lustro["country_name"].to_numpy(),
+            hovertemplate="<b>Profundidad: %{marker.color:.1f} Km<br>País: %{customdata}</b>",
         )
-        fig.add_traces([mapa])
+        fig.add_trace(mapa)
         fig.update_layout(
             title={
                 "text": f"<b>Mapa de Profundidad Sísmica, lustro: {selector_lustro.value} - {selector_lustro.value + 4}</b>"
@@ -641,7 +631,7 @@ def _(df_limpio, go, mo, np, selector_lustro, titulo_vistageneral):
                 "center": {"lat": 15, "lon": -90},
             },
         )
-        return fig
+        return mo.ui.plotly(fig)
 
     mapa_depth_lustro = crear_mapa_depth_lustro()
 
@@ -649,7 +639,8 @@ def _(df_limpio, go, mo, np, selector_lustro, titulo_vistageneral):
         {
             "Magnitud de momento": mapa_mw_lustro,
             "Profundidad de sismo": mapa_depth_lustro,
-        }
+        },
+        lazy=True,
     )
 
     vista_general = mo.vstack([panel, titulo_vistageneral, tabs_vistageneral])
@@ -1094,13 +1085,7 @@ def _(
         depth = df_mw_depth_lustro["depth"].to_numpy().round(2)
         mw = df_mw_depth_lustro["Mw"].to_numpy()
         custom = np.stack(
-            [
-                df_mw_depth_lustro["year"],
-                df_mw_depth_lustro["place"],
-                df_mw_depth_lustro["country_name"],
-                depth,
-                mw,
-            ],
+            [df_mw_depth_lustro["year"], df_mw_depth_lustro["country_name"]],
             axis=-1,
         )
 
@@ -1116,7 +1101,7 @@ def _(
                 "opacity": 0.6,
             },
             customdata=custom,
-            hovertemplate="<b>Año: %{customdata[0]}<br>País: %{customdata[2]}<br>Lugar: %{customdata[1]}<br>Magnitud: %{customdata[4]} Mw<br>Profundidad: %{customdata[3]} Km</b>",
+            hovertemplate="<b>Año: %{customdata[0]}<br>País: %{customdata[1]}<br>Magnitud: %{y:.1f} Mw<br>Profundidad: %{x:.1f} Km</b>",
             name="",
         )
         fig.add_vline(
@@ -1141,7 +1126,7 @@ def _(
             xaxis_title="Profundidad (Km)",
             yaxis_title="Magnitud de Momento (Mw)",
         )
-        return fig
+        return mo.ui.plotly(fig)
 
     selectores_detallado5 = mo.hstack(
         [selector_lustro5, selector_continente], justify="start"
