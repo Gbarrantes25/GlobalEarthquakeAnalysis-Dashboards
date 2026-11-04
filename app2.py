@@ -16,7 +16,7 @@ def _():
 
     @mo.persistent_cache
     def crear_df():
-        dfx = pd.read_parquet(r"C:\Users\Gian\Downloads\df_sismos.parquet")
+        dfx = pd.read_parquet("https://github.com/Gbarrantes25/GlobalEarthquakeAnalysis-Dashboards/raw/refs/heads/main/df_sismos.parquet")
         dfx["lustro"] = (dfx["year"] // 5) * 5
         dfx = dfx.loc[dfx["Mw"] >= 5]
         dfx1 = dfx.dropna(subset=["depth"])
@@ -489,7 +489,7 @@ def _(df_limpio, go, mo, np, selector_lustro, titulo_vistageneral):
         )
 
         img = mo.image(
-            src="D:/Imágenes/Logo de consultoría/VectorLogo2.svg",
+            src="https://raw.githubusercontent.com/Gbarrantes25/GlobalEarthquakeAnalysis-Dashboards/refs/heads/main/VectorLogo2.svg",
             height=150,
             rounded=True,
             vmin=50,
