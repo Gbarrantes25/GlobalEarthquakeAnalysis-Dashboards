@@ -17,7 +17,7 @@
 - [Herramientas y Tecnologías](#️-herramientas-y-tecnologías-utilizadas)
 - [Configuración del Entorno](#️-configuración-del-entorno)
 - [Estructura del Repositorio](#-estructura-del-repositorio)
-- [Proceso ETL y Lógica de Negocio](#-Proceso-ETL-y-Lógica-de-Negocio)
+- [Proceso ETL y Lógica de Negocio](#-proceso-etl-y-lógica-de-negocio)
 - [Vistas Previas](#️-vistas-previas-del-proyecto)
 - [Autor](#-autor)
 - [Licencia](#-licencia)
@@ -141,6 +141,8 @@ La aplicación se abrirá automáticamente en tu navegador predeterminado (gener
 
 > ⚠️ Nota: Asegúrate de que la ruta del archivo df_sismos.parquet en el código apunte a una ubicación válida en tu sistema local.
 
+---
+
 ## 📂 Estructura del Repositorio
 
 ```
@@ -151,6 +153,8 @@ La aplicación se abrirá automáticamente en tu navegador predeterminado (gener
 ├── .gitignore                # Archivo de configuración Git
 └── README.md                 # Este archivo de documentación
 ```
+
+---
 
 ## ⚙️ Proceso ETL y Lógica de Negocio
 
@@ -173,6 +177,8 @@ Una de las fortalezas del proyecto es su pipeline de datos, que convierte divers
 
 El pipeline final filtra eventos desde 1970, elimina valores nulos de profundidad, rellena ubicaciones desconocidas con "Sin registro" y convierte columnas categóricas para reducir el tamaño del archivo en un ~99% (de 1.7 GB a 17.7 MB).
 
+---
+
 ## 🖼️ Vistas Previas del Proyecto
 <details>
 <summary>📸 Ver Capturas de Pantalla</summary>
@@ -189,6 +195,8 @@ El pipeline final filtra eventos desde 1970, elimina valores nulos de profundida
    Ver en YouTube: https://youtu.be/WlyiYUq-yAQ?si=uZg7TLCDTZ2_z5AD
 </details>
 
+---
+
 ## 👤 Autor
 Giancarlo Barrantes
 
@@ -202,8 +210,12 @@ Business Intelligence Developer | Power BI Specialist
 <a href="https://www.youtube.com/@gbarrantes25"><img width="70" height="20" alt="image" src="https://github.com/user-attachments/assets/d9e2cb69-29ec-47fc-93ae-30896a7b533d" />
 </a>
 
+---
+
 ## 📝 Licencia
 Este proyecto está bajo la Licencia MIT - ver el archivo <a href="https://mit-license.org/">LICENSE</a> para más detalles.
+
+---
 
 ## ⭐ Agradecimientos
 Si este proyecto te resultó útil, considera darle una ⭐ en GitHub y compartirlo con otros profesionales de Business Intelligence.
