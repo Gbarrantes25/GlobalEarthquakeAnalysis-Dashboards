@@ -17,7 +17,7 @@
 - [Herramientas y Tecnologías](#️-herramientas-y-tecnologías-utilizadas)
 - [Configuración del Entorno](#️-configuración-del-entorno)
 - [Estructura del Repositorio](#-estructura-del-repositorio)
-- [Proceso ETL y Lógica de Negocio](#-proceso-etl-y-lógica-de-negocio)
+- [Proceso ETL y Lógica de Negocio](#️-proceso-etl-y-lógica-de-negocio)
 - [Vistas Previas](#️-vistas-previas-del-proyecto)
 - [Autor](#-autor)
 - [Licencia](#-licencia)
